@@ -7,57 +7,20 @@ if (process.env.NODE_ENV === 'production') {
     apiOptions.server = 'http://wifizones.herokuapp.com';
 }
 
-var renderHomepage = function (req, res, responseBody) {
-    var message;
-    if (!(responseBody instanceof Array)) {
-        responseBody = [];
-        message = "API lookup error";
-    }
-    else {
-        if (!responseBody.length) {
-            message = "No places found nearby";
-        }
-    }
-
+var renderHomepage = function (req, res) {
     res.render('locations-list', {
         title: 'Loc8r - find a place to work with wifi',
         pageHeader: {
             title: 'Loc8r',
             strapline: 'Find places to work with wifi near you!'
         },
-        sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for.",
-        locations: responseBody,
-        message: message
+        sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for."
     });
 };
 
 /* GET 'home' page */
 module.exports.homelist = function (req, res, next) {
-    var requestOptions, path;
-    path = '/api/locations';
-    requestOptions = {
-        url: apiOptions.server + path,
-        method: 'GET',
-        json: {},
-        qs: {
-            lng: -0.9690884,
-            lat: 51.455041,
-            maxDistance: 2
-        }
-    };
-
-    request(requestOptions, function (err, response, body) {
-        var i, data;
-        data = body;
-
-        if (response.statusCode == 200 && data.length) {
-            for (i = 0; i < data.length; ++i) {
-                data[i].distance = _formatDistance(data[i].distance);
-            }
-        }
-
-        renderHomepage(req, res, data);
-    });
+    renderHomepage(req, res);
 };
 
 var _formatDistance = function (distance) {
@@ -140,7 +103,8 @@ var renderReviewForm = function(req, res, locDetail){
         pageHeader: {
             title: 'Review ' + locDetail.name
         },
-        error: req.query.err
+        error: req.query.err,
+        url: req.originalUrl
     });
 };
 
@@ -167,15 +131,15 @@ module.exports.doAddReview = function(req, res){
     };
 
     if(!postdata.author || !postdata.rating || !postdata.reviewText){
-        res.redirect('/locations/' + locationid + '/review/new?err=val');
+        res.redirect('/location/' + locationid + '/review/new?err=val');
     }
     else{
         request(requestOptions, function(err, response, body){
             if(response.statusCode === 201){
-                res.redirect('/locations/' + locationid);
+                res.redirect('/location/' + locationid);
             }
             else if(response.statusCode === 400 && body.name && body.name === 'ValidationError'){
-                res.redirect('/locations/' + locationid + '/review/new?err=val');
+                res.redirect('/location/' + locationid + '/review/new?err=val');
             }
             else{
                 _showError(req, res, response.statusCode);
