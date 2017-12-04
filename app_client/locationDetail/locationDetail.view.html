@@ -38,7 +38,7 @@
                             <h2 class="panel-title">Location map</h2>
                         </div>
                         <div class="panel-body">
-                            <img src="http://maps.googleapis.com/maps/api/staticmap?center={{ vm.data.location.coords[1] }},{{ vm.data.location.coords[0] }}&amp;zoom=17&amp;size=400x350&amp;sensor=false&amp;markers={{ vm.data.location.coords[1] }},{{ vm.data.location.coords[0] }}&amp;scale=2" class="img-responsive img-rounded">
+                            <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ vm.data.location.coordinates[1] }},{{ vm.data.location.coordinates[0] }}&amp;zoom=17&amp;size=400x350&amp;sensor=false&amp;markers={{ vm.data.location.coordinates[1] }},{{ vm.data.location.coordinates[0] }}&amp;scale=2&amp;key=AIzaSyB_hy6-jzBWvt9q00eDhtxWwcbfnMZzr1I" class="img-responsive img-rounded">
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,8 @@
                 <div class="col-xs-12">
                     <div class="panel panel-primary review-panel">
                         <div class="panel-heading">
-                            <a ng-click="vm.popupReviewForm()" class="btn btn-default pull-right">Add review</a>
+                            <a ng-show="vm.isLoggedIn" ng-click="vm.popupReviewForm()" class="btn btn-default pull-right">Add review</a>
+                            <a ng-hide="vm.isLoggedIn" href="/#/login?page={{ vm.currentPath }}" class="btn btn-default pull-right">Login to add review</a>
                             <h2 class="panel-title">Customer reviews</h2>
                         </div>
                         <div class="panel-body review-container">
