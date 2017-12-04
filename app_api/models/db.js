@@ -57,3 +57,4 @@ process.on('SIGTERM', function () {
 
 //including schema
 require('./locations');
+require('./users');
